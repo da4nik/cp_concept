@@ -38,8 +38,12 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    amq-protocol (2.3.0)
     arel (8.0.0)
+    bcrypt (3.1.11)
     builder (3.2.3)
+    bunny (2.9.2)
+      amq-protocol (~> 2.3.0)
     byebug (10.0.0)
     concurrent-ruby (1.0.5)
     crass (1.0.3)
@@ -141,6 +145,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bcrypt (~> 3.1.7)
+  bunny
   byebug
   database_cleaner
   listen (>= 3.0.5, < 3.2)
@@ -150,7 +156,6 @@ DEPENDENCIES
   rspec-rails
   spring
   spring-watcher-listen (~> 2.0.0)
-  tzinfo-data
 
 BUNDLED WITH
    1.16.1

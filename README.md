@@ -1,24 +1,32 @@
-# README
+# POC
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Куски такие, для запуска:
+* `rails s` - api для работы с клиентами
+* `ruby processing.rb btc` - модуль процессинга валюты, rpc
+* `rake worker:balance` - модуль обновления баланса кошелька
 
-Things you may want to cover:
+в те же места можно впихнуть ещё посылку коллбэков и прочее
 
-* Ruby version
+Для примера только 1 юзкейс: Отправка тразакции
 
-* System dependencies
+Команда для теста: `curl -v -X POST "http://localhost:3000/btc/transactions?amount=1&to=sometarget"`
 
-* Configuration
+Как всё происходит:
+* API при получении этой команды идет по RPC в обработчик валюты, который воздаёт транзакцию и отправляет обратно id транзакции
+* API создает эту транзакцию со статусом `unconfirmed`
+* При получении эвента от блокчейна этот эвент отправляется в очередь, где может ловиться кем угодно. Тут же это ловится балансом, который обновляет статус транзакции на `confirmed`
 
-* Database creation
+API предлагаю такой:
 
-* Database initialization
+ * `post 'wallet/:currency' => 'wallet#create'` создает новый кошелёк валюты 
+ * `get 'wallet' => 'wallet#index'` получает список валют, их кошельков и баланс по этим кошелькам.
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+ * ```
+   scope ':currency' do
+    resources :transactions, only: [:create, :index]
+   end
+   ```
+   Создает транзакцию по валюте или получает транзакции по этой валюте, пример выше в curl
+   
+   
+ 
